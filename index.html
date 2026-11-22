@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fortnite OG Generator</title>
+
+<style>
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    background: #080d19;
+    color: white;
+    font-family: Arial, sans-serif;
+}
+
+header {
+    padding: 25px 15px;
+    text-align: center;
+    background: linear-gradient(135deg,#171b38,#39246c);
+    border-bottom: 2px solid #7654ff;
+}
+
+header h1 {
+    margin: 0;
+    font-size: 27px;
+}
+
+header p {
+    color: #b9b9d7;
+}
+
+.container {
+    padding: 18px;
+    max-width: 850px;
+    margin: auto;
+}
+
+.panel {
+    background: #121a2b;
+    border: 1px solid #283653;
+    border-radius: 12px;
+    padding: 17px;
+    margin-bottom: 18px;
+}
+
+h2 {
+    font-size: 19px;
+    color: #a991ff;
+}
+
+input, select {
+    width: 100%;
+    padding: 13px;
+    margin: 8px 0;
+    background: #080f20;
+    color: white;
+    border: 1px solid #39476a;
+    border-radius: 7px;
+}
+
+button {
+    padding: 12px;
+    border: none;
+    border-radius: 7px;
+    background: #7551ff;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+button:active {
+    transform: scale(.97);
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(2,1fr);
+    gap: 10px;
+}
+
+.cosmetic {
+    padding: 13px;
+    background: #1c2940;
+    border: 1px solid #354665;
+    border-radius: 9px;
+}
+
+.cosmetic label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.cosmetic input {
+    width: auto;
+}
+
+#inventory {
+    color: #c7c7e5;
+    line-height: 1.8;
+}
+
+footer {
+    text-align: center;
+    padding: 25px;
+    color: #777f99;
+    font-size: 12px;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+<h1>FORTNITE OG GENERATOR</h1>
+<p>Ultimate OG Cosmetic Collection</p>
+</header>
+
+<div class="container">
+
+<div class="panel">
+<h2>Account Profile</h2>
+
+<input id="username" placeholder="Account profile name">
+
+<button onclick="createProfile()">Create Profile</button>
+
+<p id="profileStatus"></p>
+</div>
+
+<div class="panel">
+<h2>Cosmetic Collection</h2>
+
+<select id="category" onchange="renderCosmetics()">
+<option value="Skins">Outfits</option>
+<option value="Pickaxes">Pickaxes</option>
+<option value="Emotes">Emotes</option>
+<option value="Gliders">Gliders</option>
+<option value="Back Blings">Back Blings</option>
+</select>
+
+<div class="grid" id="cosmetics"></div>
+</div>
+
+<div class="panel">
+<h2>Selected Inventory</h2>
+
+<div id="inventory">No cosmetics selected.</div>
+
+<button onclick="saveInventory()">Save Inventory</button>
+</div>
+
+<div class="panel">
+<h2>Epic Games</h2>
+
+<p>Use official Epic Games services to register and manage your Fortnite account.</p>
+
+<button onclick="window.open('https://www.epicgames.com/id/register','_blank')">
+Official Epic Games Registration
+</button>
+</div>
+
+</div>
+
+<footer>
+Fortnite OG Generator | Independent cosmetic inventory manager
+</footer>
+
+<script>
+
+const data = {
+Skins: [
+"Travis Scott",
+"Ikonik",
+"Glow",
+"Renegade Raider",
+"Aerial Assault Trooper",
+"Black Knight",
+"Skull Trooper",
+"Galaxy",
+"Wonder",
+"Honor Guard",
+"Recon Expert",
+"Sparkle Specialist",
+"Omega",
+"Visitor",
+"Ragnarok",
+"Drift"
+],
+
+Pickaxes: [
+"Leviathan Axe",
+"Reaper",
+"AC/DC",
+"Raiders Revenge",
+"Minty Axe",
+"Trusty No. 2"
+],
+
+Emotes: [
+"Take the L",
+"Scenario",
+"Fresh",
+"Floss",
+"Orange Justice",
+"Best Mates",
+"Electro Shuffle",
+"Ride the Pony",
+"Flapper",
+"True Heart",
+"Go Mufasa",
+"Out West"
+],
+
+Gliders: [
+"Raven",
+"Founder’s Glider",
+"Snowflake",
+"Blue Streak"
+],
+
+"Back Blings": [
+"Black Shield",
+"Galaxy",
+"Dark Matter",
+"Love Wings"
+]
+};
+
+let selected = [];
+
+function createProfile() {
+    let name = document.getElementById("username").value.trim();
+
+    if (!name) {
+        alert("Enter a profile name first.");
+        return;
+    }
+
+    localStorage.setItem("profile", name);
+
+    document.getElementById("profileStatus").textContent =
+        "Profile created: " + name;
+}
+
+function renderCosmetics() {
+    let category = document.getElementById("category").value;
+    let container = document.getElementById("cosmetics");
+
+    container.innerHTML = "";
+
+    data[category].forEach(item => {
+        let div = document.createElement("div");
+        div.className = "cosmetic";
+
+        let label = document.createElement("label");
+        let checkbox = document.createElement("input");
+
+        checkbox.type = "checkbox";
+        checkbox.checked = selected.some(x => x.name === item);
+
+        checkbox.onchange = () => {
+            if (checkbox.checked) {
+                selected.push({name:item, category});
+            } else {
+                selected = selected.filter(x => x.name !== item);
+            }
+
+            updateInventory();
+        };
+
+        label.appendChild(checkbox);
+        label.appendChild(document.createTextNode(item));
+
+        div.appendChild(label);
+        container.appendChild(div);
+    });
+}
+
+function updateInventory() {
+    let inventory = document.getElementById("inventory");
+
+    if (!selected.length) {
+        inventory.textContent = "No cosmetics selected.";
+        return;
+    }
+
+    inventory.innerHTML = "";
+
+    selected.forEach(item => {
+        let line = document.createElement("p");
+        line.textContent = item.category + ": " + item.name;
+        inventory.appendChild(line);
+    });
+}
+
+function saveInventory() {
+    localStorage.setItem("inventory", JSON.stringify(selected));
+    alert("Inventory saved!");
+}
+
+renderCosmetics();
+
+</script>
+
+</body>
+</html>
