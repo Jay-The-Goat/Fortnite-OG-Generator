@@ -3,502 +3,358 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Fortnite OG Generator</title>
-
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Fortnite OG Dashboard</title>
 <style>
 *{box-sizing:border-box}
 body{
- margin:0;background:#080d19;color:white;
- font-family:Arial,sans-serif
+ margin:0;background:#080817;color:white;
+ font-family:Arial,sans-serif;
 }
 header{
- text-align:center;padding:27px 12px;
- background:linear-gradient(130deg,#171b38,#552b91);
- border-bottom:2px solid #9365ff
+ padding:25px 15px;text-align:center;
+ background:linear-gradient(120deg,#21104c,#51249c,#160d37);
+ border-bottom:2px solid #9b5cff;
+ box-shadow:0 0 25px #642aff55;
 }
-header h1{margin:0;font-size:26px}
-header p{color:#ccc}
-.container{max-width:900px;margin:auto;padding:15px}
+header h1{margin:0;font-size:25px}
+header p{color:#d1c4ff}
+.container{max-width:950px;margin:auto;padding:15px}
 .panel{
- background:#121b2d;padding:17px;
- border:1px solid #34415e;
- border-radius:12px;margin-bottom:17px
+ background:#111329;border:1px solid #45336c;
+ border-radius:13px;padding:17px;margin-bottom:17px;
+ box-shadow:0 0 15px #5426a522;
 }
-h2{color:#ad96ff;font-size:19px}
+h2{color:#b58cff;font-size:19px}
 input,select{
  width:100%;padding:13px;margin:7px 0;
- border-radius:7px;border:1px solid #465477;
- background:#091326;color:white
+ background:#090d20;color:white;
+ border:1px solid #55417f;border-radius:7px;
 }
 button{
- background:#7953ff;color:white;border:0;
- padding:12px;border-radius:7px;
- font-weight:bold;cursor:pointer
+ padding:12px;border:0;border-radius:7px;
+ background:linear-gradient(120deg,#6739d9,#a04dff);
+ color:white;font-weight:bold;cursor:pointer;
 }
-.grid{
- display:grid;grid-template-columns:repeat(2,1fr);
- gap:9px
-}
-.item{
- background:#1b2940;border:1px solid #384968;
- padding:12px;border-radius:9px;
- font-size:13px
-}
-.item label{display:flex;align-items:center;gap:8px}
-.item input{width:auto;margin:0}
-.badge{color:#ad96ff;font-size:10px}
+button.danger{background:#b73555}
+button.secondary{background:#303754}
 .actions{display:flex;gap:8px;flex-wrap:wrap}
 .actions button{flex:1}
-#inventory p{
- padding:9px;background:#1b2940;border-radius:6px;
- font-size:13px
+.grid{
+ display:grid;grid-template-columns:repeat(2,1fr);
+ gap:10px
 }
-.small{font-size:12px;color:#aab4cb;line-height:1.5}
-footer{text-align:center;padding:20px;color:#78849d}
+.card{
+ background:#1b1d39;border:1px solid #493b70;
+ border-radius:9px;padding:12px;margin:7px 0;
+}
+.card strong{color:#c4a5ff}
+.small{font-size:12px;color:#aaa9c5;line-height:1.6}
+.status{color:#7dffb0;font-size:12px}
+#profiles{margin-top:12px}
+footer{text-align:center;padding:20px;color:#777}
 </style>
 </head>
-
 <body>
 
 <header>
 <h1>FORTNITE OG GENERATOR</h1>
-<p>Ultimate Cosmetic Collection Manager</p>
+<p>Ultimate Account Dashboard</p>
 </header>
 
 <div class="container">
 
 <div class="panel">
-<h2>Account Profile</h2>
-<input id="username" placeholder="Enter profile name">
-<button onclick="createProfile()">Create Profile</button>
-<p id="profileStatus" class="small"></p>
+<h2>Dashboard</h2>
+<div class="grid">
+<div class="card">
+<strong id="accountCount">0</strong>
+<p class="small">Account Profiles</p>
+</div>
+<div class="card">
+<strong id="cosmeticCount">0</strong>
+<p class="small">Selected Cosmetics</p>
+</div>
+</div>
+<p class="status">● Dashboard Online</p>
 </div>
 
 <div class="panel">
-<h2>Cosmetic Database</h2>
-
-<input id="search" placeholder="Search cosmetics..." oninput="render()">
-
-<select id="category" onchange="render()">
-<option value="All">All Cosmetics</option>
-<option value="Skins">Outfits</option>
-<option value="Pickaxes">Pickaxes</option>
-<option value="Emotes">Emotes</option>
-<option value="Gliders">Gliders</option>
-<option value="Back Blings">Back Blings</option>
-</select>
-
-<div class="grid" id="cosmetics"></div>
-</div>
-
-<div class="panel">
-<h2>My Selected Cosmetics</h2>
-<div id="inventory">No cosmetics selected.</div>
-
+<h2>Create Account Profile</h2>
+<input id="newName" placeholder="Enter account profile name">
 <div class="actions">
-<button onclick="saveInventory()">Save</button>
-<button onclick="clearInventory()">Clear</button>
+<button onclick="createAccount()">Create Profile</button>
+</div>
+<p class="small">Creates a local inventory profile, not an Epic Games account.</p>
+</div>
+
+<div class="panel">
+<h2>Account Profiles</h2>
+<input id="search" placeholder="Search profiles..." oninput="renderProfiles()">
+<div id="profiles"></div>
+</div>
+
+<div class="panel">
+<h2>Selected Account</h2>
+<div id="selectedAccount">Select an account profile.</div>
+<div class="actions">
+<button onclick="assignInventory()">Assign Current Cosmetics</button>
+<button onclick="exportAccount()">Export Account</button>
 </div>
 </div>
 
 <div class="panel">
-<h2>Account Information</h2>
-<p class="small">
-This application manages cosmetic selections and account profiles.
-Selected cosmetics are not automatically unlocked or added to Fortnite accounts.
-Only Epic Games can confirm actual cosmetic ownership.
-</p>
-<button onclick="window.open('https://www.epicgames.com/id/login','_blank')">
-Open Epic Games
-</button>
+<h2>Account Inventory</h2>
+<div id="inventory">No account selected.</div>
+</div>
+
+<div class="panel">
+<h2>Import / Export</h2>
+<div class="actions">
+<button onclick="exportAll()">Export All Profiles</button>
+<button class="secondary" onclick="document.getElementById('importFile').click()">Import Profiles</button>
+<input type="file" id="importFile" accept=".json" hidden onchange="importProfiles(event)">
+</div>
+<p class="small">Profile data is stored locally in your browser.</p>
 </div>
 
 </div>
 
 <footer>
-Fortnite OG Generator | Cosmetic Manager
+Fortnite OG Generator | Independent Inventory Manager
 </footer>
 
 <script>
 
-const database = {
+let accounts=JSON.parse(localStorage.getItem("ogAccounts")||"[]");
+let current=localStorage.getItem("ogCurrent")||null;
 
-Skins: [
-"Travis Scott",
-"Astro Jack",
-"Ikonik",
-"Glow",
-"Renegade Raider",
-"Aerial Assault Trooper",
-"Black Knight",
-"Skull Trooper",
-"Galaxy",
-"Wonder",
-"Honor Guard",
-"Recon Expert",
-"Sparkle Specialist",
-"Omega",
-"The Reaper",
-"Ragnarok",
-"Drift",
-"Raven",
-"John Wick",
-"Dark Voyager",
-"Blue Squire",
-"Royale Knight",
-"Elite Agent",
-"Carbide",
-"Valor",
-"Moonwalker",
-"Battlehawk",
-"Rust Lord",
-"Teknique",
-"Zoey",
-"Rex",
-"Tricera Ops",
-"Raptor",
-"Crackshot",
-"Merry Marauder",
-"Nog Ops",
-"Codename E.L.F.",
-"Red-Nosed Raider",
-"Power Chord",
-"Love Ranger",
-"Skull Ranger",
-"Dire",
-"Calamity",
-"Hybrid",
-"Blackheart",
-"Peely",
-"Sentinel",
-"Vendetta",
-"Stratus",
-"Jungle Scout",
-"Arctic Assassin",
-"Special Forces",
-"Midnight Ops",
-"Commando",
-"Recon Specialist",
-"Renegade",
-"Assault Trooper",
-"Whiplash",
-"Scout",
-"Tower Recon Specialist",
-"Desperado",
-"Rogue Agent",
-"Blue Team Leader",
-"Dark Bomber",
-"Fate",
-"Ravage",
-"Leviathan",
-"Trench Raider",
-"Criterion",
-"Vertex",
-"Abstrakt",
-"Battle Hound",
-"Highland Warrior",
-"Magnus",
-"Red Knight",
-"Crimson Scout",
-"Moisty Merman",
-"Fishstick",
-"Peely Bone",
-"Slushy Soldier",
-"Frozen Raven",
-"Frozen Red Knight",
-"Frozen Love Ranger",
-"Marshmello",
-"Ikonik Alt",
-"DJ Bop",
-"Beef Boss",
-"Tomatohead",
-"Burnout",
-"Flapjackie",
-"Funk Ops",
-"Disco Diva",
-"Wildcard",
-"Dire Wolf",
-"Skully",
-"Volley Girl",
-"Birdie",
-"Sunbird",
-"Dream",
-"Ether",
-"Crystal",
-"Brilliant Striker",
-"Verge",
-"Jumpshot",
-"Triple Threat",
-"Snorkel Ops",
-"Clinical Crosser",
-"Poised Playmaker",
-"Goalbound",
-"Midfield Maestro",
-"Redline",
-"Burning Wolf",
-"Ruin",
-"Sentinel Prime"
-],
-
-Pickaxes: [
-"Leviathan Axe",
-"Reaper",
-"AC/DC",
-"Raider's Revenge",
-"Minty Axe",
-"Trusty No. 2",
-"Spectral Axe",
-"Death Valley",
-"Positron",
-"Star Wand",
-"Driver",
-"Studded Axe",
-"Plunja",
-"Party Animal",
-"Chomp Jr.",
-"Vision",
-"Permafrost",
-"Frozen Axe",
-"Abominable Axe",
-"Rainbow Smash",
-"Power Grip",
-"Electri-Claw",
-"Medieval",
-"Cliffhanger",
-"Pulse Axe",
-"Instigator"
-],
-
-Emotes: [
-"Take the L",
-"Scenario",
-"Fresh",
-"Floss",
-"Orange Justice",
-"Best Mates",
-"Electro Shuffle",
-"Ride the Pony",
-"Flapper",
-"True Heart",
-"Go Mufasa",
-"Out West",
-"Default Dance",
-"Disco Fever",
-"Breakin",
-"Rocket Rodeo",
-"Boneless",
-"Groove Jam",
-"Hype",
-"Pop Lock",
-"Reanimated",
-"Sprinkler",
-"Make It Rain",
-"Running Man",
-"Jubilation",
-"Slow Clap",
-"Salute",
-"Rambunctious",
-"Confused",
-"Fancy Feet",
-"Finger Guns",
-"Pure Salt",
-"Waterworks",
-"You're Awesome",
-"Shaolin Sit-Up",
-"Smooth Moves",
-"Scenario Remix",
-"Never Gonna",
-"Intensity",
-"Work It",
-"Living Large",
-"Squat Kick",
-"Star Power",
-"Zany",
-"Click!",
-"Phone It In",
-"Mic Drop",
-"Cat Flip",
-"Breakneck",
-"Brush Your Shoulders"
-],
-
-Gliders: [
-"Founder’s Glider",
-"Snowflake",
-"Blue Streak",
-"Raven",
-"Discovery",
-"Slipstream",
-"Paper Parasol",
-"Snowfall",
-"Get Down!",
-"Carbon",
-"Sir Glider the Brave",
-"Royal X",
-"Downshift",
-"Laser Chomp",
-"Flappy",
-"Cloud Strike"
-],
-
-"Back Blings": [
-"Black Shield",
-"Galaxy",
-"Dark Matter",
-"Love Wings",
-"Skirmish",
-"Offworld Rig",
-"Precision",
-"Red Shield",
-"Astro",
-"Pool Party",
-"Frozen Shroud",
-"Subjugator",
-"Gold Token",
-"Ghost Portal",
-"Birthday Cake",
-"Dark Bag",
-"Deep Fried",
-"Backboard"
-]
-
-};
-
-let selected = JSON.parse(
- localStorage.getItem("selectedCosmetics") || "[]"
+let cosmetics=JSON.parse(
+ localStorage.getItem("selectedCosmetics")||"[]"
 );
 
-function createProfile(){
- const name=document.getElementById("username").value.trim();
+function save(){
+ localStorage.setItem("ogAccounts",JSON.stringify(accounts));
+ localStorage.setItem("ogCurrent",current||"");
+}
 
- if(!name){
-  alert("Enter a profile name.");
-  return;
- }
+function createAccount(){
 
- localStorage.setItem("profileName",name);
+ const name=document.getElementById("newName").value.trim();
 
- document.getElementById("profileStatus").textContent=
- "Profile saved: "+name;
+ if(!name)return alert("Enter a profile name.");
+
+ const account={
+  id:crypto.randomUUID(),
+  name:name,
+  created:new Date().toLocaleDateString(),
+  inventory:[],
+  verified:[]
+ };
+
+ accounts.push(account);
+ current=account.id;
+
+ document.getElementById("newName").value="";
+
+ save();
+ render();
+}
+
+function deleteAccount(id){
+
+ if(!confirm("Delete this profile?"))return;
+
+ accounts=accounts.filter(a=>a.id!==id);
+
+ if(current===id)current=null;
+
+ save();
+ render();
+}
+
+function selectAccount(id){
+
+ current=id;
+ save();
+ render();
+}
+
+function assignInventory(){
+
+ const account=accounts.find(a=>a.id===current);
+
+ if(!account)return alert("Select an account first.");
+
+ account.inventory=[...cosmetics];
+
+ save();
+ render();
+
+ alert("Cosmetic selections assigned to profile!");
+}
+
+function renderProfiles(){
+
+ const box=document.getElementById("profiles");
+ const query=document.getElementById("search").value.toLowerCase();
+
+ box.innerHTML="";
+
+ accounts.filter(a=>a.name.toLowerCase().includes(query))
+ .forEach(a=>{
+
+  const card=document.createElement("div");
+  card.className="card";
+
+  const title=document.createElement("strong");
+  title.textContent=a.name;
+
+  const date=document.createElement("p");
+  date.className="small";
+  date.textContent="Created: "+a.created;
+
+  const select=document.createElement("button");
+  select.textContent="Open Profile";
+  select.onclick=()=>selectAccount(a.id);
+
+  const remove=document.createElement("button");
+  remove.textContent="Delete";
+  remove.className="danger";
+  remove.onclick=()=>deleteAccount(a.id);
+
+  card.append(title,date,select,remove);
+  box.appendChild(card);
+
+ });
+
 }
 
 function render(){
 
- const category=document.getElementById("category").value;
- const search=document.getElementById("search").value.toLowerCase();
- const container=document.getElementById("cosmetics");
+ renderProfiles();
 
- container.innerHTML="";
+ document.getElementById("accountCount").textContent=accounts.length;
+ document.getElementById("cosmeticCount").textContent=cosmetics.length;
 
- Object.entries(database).forEach(([group,items])=>{
+ const account=accounts.find(a=>a.id===current);
 
-  if(category!=="All" && category!==group)return;
+ const selected=document.getElementById("selectedAccount");
+ const inventory=document.getElementById("inventory");
 
-  items.forEach(name=>{
-
-   if(!name.toLowerCase().includes(search))return;
-
-   const exists=selected.some(x=>x.name===name);
-
-   const div=document.createElement("div");
-   div.className="item";
-
-   const label=document.createElement("label");
-   const checkbox=document.createElement("input");
-
-   checkbox.type="checkbox";
-   checkbox.checked=exists;
-
-   checkbox.onchange=()=>{
-
-    if(checkbox.checked){
-
-     if(!selected.some(x=>x.name===name)){
-      selected.push({name,category:group});
-     }
-
-    }else{
-
-     selected=selected.filter(x=>x.name!==name);
-
-    }
-
-    updateInventory();
-   };
-
-   label.appendChild(checkbox);
-   label.appendChild(document.createTextNode(name));
-
-   const badge=document.createElement("div");
-   badge.className="badge";
-   badge.textContent=group;
-
-   div.appendChild(label);
-   div.appendChild(badge);
-
-   container.appendChild(div);
-
-  });
-
- });
-
-}
-
-function updateInventory(){
-
- const box=document.getElementById("inventory");
- box.innerHTML="";
-
- if(!selected.length){
-  box.textContent="No cosmetics selected.";
+ if(!account){
+  selected.textContent="Select an account profile.";
+  inventory.textContent="No account selected.";
   return;
  }
 
- selected.forEach(item=>{
+ selected.textContent=account.name+" | Created "+account.created;
 
-  const p=document.createElement("p");
-  p.textContent=item.category+" — "+item.name;
-  box.appendChild(p);
+ inventory.innerHTML="";
 
+ if(!account.inventory.length){
+  inventory.textContent="No cosmetics assigned.";
+ }else{
+
+  account.inventory.forEach(item=>{
+
+   const card=document.createElement("div");
+   card.className="card";
+
+   const title=document.createElement("strong");
+   title.textContent=item.name;
+
+   const type=document.createElement("p");
+   type.className="small";
+   type.textContent=item.category;
+
+   const status=document.createElement("p");
+   status.className="small";
+   status.textContent=account.verified.includes(item.name)
+    ?"Verified ownership":"Not verified";
+
+   card.append(title,type,status);
+   inventory.appendChild(card);
+
+  });
+
+ }
+
+}
+
+function download(data,name){
+
+ const blob=new Blob([JSON.stringify(data,null,2)],{
+  type:"application/json"
  });
 
+ const url=URL.createObjectURL(blob);
+ const link=document.createElement("a");
+
+ link.href=url;
+ link.download=name;
+ link.click();
+
+ URL.revokeObjectURL(url);
 }
 
-function saveInventory(){
+function exportAccount(){
 
- localStorage.setItem(
-  "selectedCosmetics",
-  JSON.stringify(selected)
- );
+ const account=accounts.find(a=>a.id===current);
 
- alert("Your cosmetic selections have been saved!");
+ if(!account)return alert("Select an account.");
+
+ download(account,"fortnite-account-profile.json");
 }
 
-function clearInventory(){
-
- if(!confirm("Clear all selected cosmetics?"))return;
-
- selected=[];
- updateInventory();
- render();
-
- localStorage.removeItem("selectedCosmetics");
+function exportAll(){
+ download(accounts,"fortnite-all-profiles.json");
 }
 
-const savedProfile=localStorage.getItem("profileName");
+function importProfiles(event){
 
-if(savedProfile){
- document.getElementById("username").value=savedProfile;
- document.getElementById("profileStatus").textContent=
- "Saved profile: "+savedProfile;
+ const file=event.target.files[0];
+ if(!file)return;
+
+ const reader=new FileReader();
+
+ reader.onload=()=>{
+
+  try{
+
+   const imported=JSON.parse(reader.result);
+
+   if(!Array.isArray(imported))throw Error();
+
+   imported.forEach(a=>{
+    if(a.name && Array.isArray(a.inventory)){
+     accounts.push({
+      id:crypto.randomUUID(),
+      name:a.name,
+      created:a.created||new Date().toLocaleDateString(),
+      inventory:a.inventory,
+      verified:[]
+     });
+    }
+   });
+
+   save();
+   render();
+
+   alert("Profiles imported!");
+
+  }catch{
+   alert("Invalid profile file.");
+  }
+
+ };
+
+ reader.readAsText(file);
 }
 
 render();
-updateInventory();
 
 </script>
-
 </body>
 </html>
 ```
